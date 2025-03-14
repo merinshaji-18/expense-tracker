@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Expense Tracker</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for category, message in messages %}
+                        <li class="{{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        <h2>Current Balance: Rs. {{ balance }}</h2>
+
+        <form action="/add_initial_budget" method="POST">
+            <input type="text" name="initial_amount" placeholder="Add Initial Budget" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <form action="/add_extra_budget" method="POST">
+            <input type="text" name="extra_budget" placeholder="Add Extra Budget" required>
+            <button type="submit">Add</button>
+        </form>
+
+        <form action="/add_expense" method="POST">
+            <input type="text" name="expense_name" placeholder="Expense Name" required>
+            <input type="text" name="expense_amount" placeholder="Expense Amount" required>
+            <button type="submit">Add Expense</button>
+        </form>
+
+        <h3>All Expenses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Expense Name</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td>{{ expense[0] }}</td>
+                    <td>Rs. {{ expense[1] }}</td>
+                    <td>{{ expense[2] }}</td>
+                    <td>
+                        <form action="/delete_expense/{{ loop.index }}" method="POST">
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
